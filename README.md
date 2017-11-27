@@ -5,13 +5,11 @@ A Bash implementation of the Rapid Automatic Keyword Extraction (RAKE) algorithm
 
 Ported with guidence from the ruby and python implementations linked below.
 
-[Python](https://github.com/aneesha/RAKE)
+[Python](https://github.com/aneesha/RAKE)  
 [Ruby](https://github.com/nok/rake-text-ruby)
 
 The source code is released under CC0 
 
 # TODO:
-+ JSON output
 + a handful of comments for future readers
-+ accept stdin
-+ add a args switch for the 
++ add a args switch for the stoplist

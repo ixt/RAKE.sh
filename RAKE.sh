@@ -132,12 +132,14 @@ generate_candidate_keyword_scores(){
         words=$(split_into_words <(echo "$phrase")) 
         PHRASE_SCORE="0"
         FILESIZE=$(ls -l $words | cut -d" " -f 5)
-        while read word; do 
-            LINE=$(grep "^$word," $scores)
-            WORD_SCORE=$(cut -d"," -f2 <<< "$LINE")
-            PHRASE_SCORE=$(bc -l <<< "$PHRASE_SCORE + $WORD_SCORE")
-        done < <(sed -e "/^\s*$/d" ${words})
-        echo "${PHRASE_SCORE},${phrase}" >> ${candidates} 
+        if [ "${FILESIZE}" -gt "10" ]; then
+            while read word; do 
+                LINE=$(grep "^$word," $scores)
+                WORD_SCORE=$(cut -d"," -f2 <<< "$LINE")
+                PHRASE_SCORE=$(bc -l <<< "$PHRASE_SCORE + $WORD_SCORE")
+            done < <(sed -e "/^\s*$/d" ${words})
+            echo "${PHRASE_SCORE},${phrase}" >> ${candidates} 
+        fi
     done < <(sed -e "/^\s*$/d" -e "s/^\s*//g;s/\s*$//g" ${phrases})
     echo ${candidates}
 }
@@ -150,10 +152,10 @@ main(){
     wordscores=$(calculate_word_scores ${phrases})
     candidates=$(generate_candidate_keyword_scores ${phrases} ${wordscores})
 
-    cat $candidates | sort -n | sed -e "s/,/\t-\t/"
+    sort -n $candidates | tail -3
     
 }
 
-pushd $DIR
+pushd $DIR >/dev/null
 main $@
-popd
+popd > /dev/null
